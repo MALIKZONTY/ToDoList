@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,72 +8,74 @@
     <title>To Do List</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <div class="box">
             <h2 class="heading">To Do List</h1>
-            <input type="text" placeholder="Write your task ... " id="inp">
-            <ul id="list"></ul>
+                <input type="text" placeholder="Write your task ... " id="inp">
+                <ul id="list"></ul>
         </div>
     </div>
     <script>
         let inp = document.querySelector('#inp');
-let ls = document.querySelector('#list');
+        let ls = document.querySelector('#list');
 
-// Load tasks from localStorage when the page loads
-window.onload = function() {
-    loadTasks();
-};
+        // Load tasks from localStorage when the page loads
+        window.onload = function () {
+            loadTasks();
+        };
 
-inp.addEventListener("keyup", func1);
+        inp.addEventListener("keyup", func1);
 
-function func1(event) {
-    if (event.key == "Enter" && this.value.trim()) {
-        addItem(this.value);
-        saveTasks();  // Save tasks to localStorage
-        this.value = "";
-    } 
-}
+        function func1(event) {
+            if (event.key == "Enter" && this.value.trim()) {
+                addItem(this.value);
+                saveTasks();  // Save tasks to localStorage
+                this.value = "";
+            }
+        }
 
-function addItem(inp) {
-    let listItem = document.createElement("li");
-    listItem.innerHTML = `${inp}<i>&times;</i>`;
+        function addItem(inp) {
+            let listItem = document.createElement("li");
+            listItem.innerHTML = `${inp}<i>&times;</i>`;
 
-    listItem.addEventListener("click", func2);
-    function func2() {
-        this.classList.toggle('done');
-        saveTasks();  // Save tasks to localStorage when a task is toggled
-    }
+            listItem.addEventListener("click", func2);
+            function func2() {
+                this.classList.toggle('done');
+                saveTasks();  // Save tasks to localStorage when a task is toggled
+            }
 
-    let completed = listItem.querySelector("i");
-    completed.addEventListener("click", func3);
-    function func3(event) {
-        event.stopPropagation();
-        listItem.remove();
-        saveTasks();  // Save tasks to localStorage when a task is removed
-    }
+            let completed = listItem.querySelector("i");
+            completed.addEventListener("click", func3);
+            function func3(event) {
+                event.stopPropagation();
+                listItem.remove();
+                saveTasks();  // Save tasks to localStorage when a task is removed
+            }
 
-    ls.appendChild(listItem);
-}
+            ls.appendChild(listItem);
+        }
 
-// Function to save tasks to localStorage
-function saveTasks() {
-    let tasks = [];
-    ls.querySelectorAll("li").forEach(item => {
-        tasks.push({ text: item.childNodes[0].nodeValue, done: item.classList.contains('done') });
-    });
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-}
+        // Function to save tasks to localStorage
+        function saveTasks() {
+            let tasks = [];
+            ls.querySelectorAll("li").forEach(item => {
+                tasks.push({ text: item.childNodes[0].nodeValue, done: item.classList.contains('done') });
+            });
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
 
-// Function to load tasks from localStorage
-function loadTasks() {
-    let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
-    tasks.forEach(task => {
-        addItem(task.text);
-        if (task.done) ls.lastChild.classList.add('done');
-    });
-}
+        // Function to load tasks from localStorage
+        function loadTasks() {
+            let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+            tasks.forEach(task => {
+                addItem(task.text);
+                if (task.done) ls.lastChild.classList.add('done');
+            });
+        }
 
     </script>
 </body>
+
 </html>
