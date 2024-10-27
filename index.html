@@ -16,32 +16,63 @@
         </div>
     </div>
     <script>
-        let inp=document.querySelector('#inp');
-        let ls=document.querySelector('#list');
-        inp.addEventListener("keyup",func1);
-        function func1(event){
-            if (event.key == "Enter"){
-                addItem(this.value);
-                this.value="";
-            } 
-        }
-        function addItem(inp) {
-            let listItem = document.createElement("li");
-            listItem.innerHTML = `${inp}<i>&times;</i>`;
+        let inp = document.querySelector('#inp');
+let ls = document.querySelector('#list');
 
-            listItem.addEventListener("click",func2);
-            function func2(){
-                this.classList.toggle('done');
-            }
-            
-            let completed=listItem.querySelector("i")
-            completed.addEventListener("click",func3);
-            function func3(){
-                listItem.remove();
-            }
+// Load tasks from localStorage when the page loads
+window.onload = function() {
+    loadTasks();
+};
 
-            ls.appendChild(listItem);
-        }
+inp.addEventListener("keyup", func1);
+
+function func1(event) {
+    if (event.key == "Enter" && this.value.trim()) {
+        addItem(this.value);
+        saveTasks();  // Save tasks to localStorage
+        this.value = "";
+    } 
+}
+
+function addItem(inp) {
+    let listItem = document.createElement("li");
+    listItem.innerHTML = `${inp}<i>&times;</i>`;
+
+    listItem.addEventListener("click", func2);
+    function func2() {
+        this.classList.toggle('done');
+        saveTasks();  // Save tasks to localStorage when a task is toggled
+    }
+
+    let completed = listItem.querySelector("i");
+    completed.addEventListener("click", func3);
+    function func3(event) {
+        event.stopPropagation();
+        listItem.remove();
+        saveTasks();  // Save tasks to localStorage when a task is removed
+    }
+
+    ls.appendChild(listItem);
+}
+
+// Function to save tasks to localStorage
+function saveTasks() {
+    let tasks = [];
+    ls.querySelectorAll("li").forEach(item => {
+        tasks.push({ text: item.childNodes[0].nodeValue, done: item.classList.contains('done') });
+    });
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// Function to load tasks from localStorage
+function loadTasks() {
+    let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+    tasks.forEach(task => {
+        addItem(task.text);
+        if (task.done) ls.lastChild.classList.add('done');
+    });
+}
+
     </script>
 </body>
 </html>
